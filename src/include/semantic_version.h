@@ -2,6 +2,12 @@
 
 // Semantic version - see http://semver.org/
 
+// The major difference between v1::Version and v2::Version is that v1 includes
+// the build identifier when calculating precedence of versions (see
+// http://semver.org/spec/v2.0.0-rc.1.html points 10,11) while v2 omits the
+// build identifier when calculating precedence of versions (see
+// http://semver.org/spec/v2.0.0.html points 10,11).
+
 #include <string>
 #include <ostream>
 
@@ -13,6 +19,7 @@ namespace semver
     class Version
     {
     public:
+      // By-parts (and default) version constructor: no validation.
       Version(
           unsigned int major = 0,
           unsigned int minor = 0,
@@ -20,15 +27,26 @@ namespace semver
           const std::string& prerelease = std::string{},
           const std::string& build = std::string{});
 
-      // parse from a version string
+      // Parse from a version string: no validation.
       explicit Version(const std::string& s);
+
+      // Is a version well-formed according to the spec?
+      // The semver spec stipulates a few properties of a well-formed version:
+      // that both the dot-separated prerelease version and the build version
+      // MUST comprise only [0-9A-Za-z-]; that numerical dot-separated
+      // identifiers MUST NOT include leading zeroes; and that such identifiers
+      // MUST NOT be empty.
+      bool IsWellFormed() const;
+
+      // Parse from a version string, with validation according to the spec.
+      static Version Parse(const std::string& s, bool& wellformed);
 
       unsigned int GetMajorVersion() const { return m_majorVersion; }
       unsigned int GetMinorVersion() const { return m_minorVersion; }
       unsigned int GetPatchVersion() const { return m_patchVersion; }
 
       // Create a new version by incrementing a part of a version. Other parts
-      // will be reset to 0.
+      // will be reset to 0, per the spec.
       Version NextMajorVersion() const;
       Version NextMinorVersion() const;
       Version NextPatchVersion() const;
@@ -87,6 +105,7 @@ namespace semver
     class Version
     {
     public:
+      // By-parts (and default) version constructor: no validation.
       Version(
           unsigned int major = 0,
           unsigned int minor = 0,
@@ -94,15 +113,23 @@ namespace semver
           const std::string& prerelease = std::string{},
           const std::string& build = std::string{});
 
-      // parse from a version string
+      // Parse from a version string: no validation.
       explicit Version(const std::string& s);
+
+      // Is a version well-formed according to the spec?
+      // The semver spec stipulates a few properties of a well-formed version:
+      // that both the dot-separated prerelease version and the build version
+      // MUST comprise only [0-9A-Za-z-]; that numerical dot-separated
+      // identifiers MUST NOT include leading zeroes; and that such identifiers
+      // MUST NOT be empty.
+      bool IsWellFormed() const;
 
       unsigned int GetMajorVersion() const { return m_majorVersion; }
       unsigned int GetMinorVersion() const { return m_minorVersion; }
       unsigned int GetPatchVersion() const { return m_patchVersion; }
 
       // Create a new version by incrementing a part of a version. Other parts
-      // will be reset to 0.
+      // will be reset to 0, per the spec.
       Version NextMajorVersion() const;
       Version NextMinorVersion() const;
       Version NextPatchVersion() const;

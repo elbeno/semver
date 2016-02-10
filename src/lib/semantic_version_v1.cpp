@@ -68,9 +68,11 @@ namespace
 
       // is either of v1[i] or v2[i] a number?
       const string& id1 = v1[i];
-      bool id1IsNumber = all_of(id1.begin(), id1.end(), [](char c) { return isdigit(c); });
+      bool id1IsNumber = all_of(id1.cbegin(), id1.cend(),
+                                [] (char c) { return isdigit(c); });
       const string& id2 = v2[i];
-      bool id2IsNumber = all_of(id2.begin(), id2.end(), [](char c) { return isdigit(c); });
+      bool id2IsNumber = all_of(id2.cbegin(), id2.cend(),
+                                [] (char c) { return isdigit(c); });
 
       // if both numbers - compare them as such
       if (id1IsNumber && id2IsNumber)
@@ -102,6 +104,38 @@ namespace
         return c;
       }
     }
+  }
+
+  bool IdentifierIsValid(const string& i)
+  {
+    vector<string> v;
+    SplitDottedString(i, v);
+
+    for (const auto& s : v)
+    {
+      // Identifiers must not be empty.
+      if (s.empty())
+      {
+        return false;
+      }
+
+      // Identifiers must contain only alphanumerics and '-'.
+      if (any_of(s.cbegin(), s.cend(),
+                 [] (char c) { return !isalnum(c) && c != '-'; }))
+      {
+        return false;
+      }
+
+      // Numeric identifiers must not contain leading zeroes.
+      bool numeric = all_of(s.cbegin(), s.cend(),
+                            [] (char c) { return isdigit(c); });
+      if (numeric && s[0] == '0')
+      {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 
@@ -139,6 +173,13 @@ Version::Version(const string& s)
 
   if (!getline(ss, m_prereleaseVersion, '+')) return;
   getline(ss, m_buildVersion, '\0');
+}
+
+//------------------------------------------------------------------------------
+bool Version::IsWellFormed() const
+{
+  return IdentifierIsValid(m_prereleaseVersion)
+    && IdentifierIsValid(m_buildVersion);
 }
 
 //------------------------------------------------------------------------------

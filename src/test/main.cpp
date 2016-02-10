@@ -179,7 +179,7 @@ DEF_TEST(Precedences_v1, SemanticVersion)
 {
   return adjacent_find(
       s_precedences_v1.cbegin(), s_precedences_v1.cend(),
-      [](const auto& a, const auto& b) { return a >= b; })
+      [] (const auto& a, const auto& b) { return a >= b; })
     == s_precedences_v1.end();
 }
 
@@ -187,7 +187,7 @@ DEF_TEST(Satisfies_v1, SemanticVersion)
 {
   return adjacent_find(
       s_precedences_v1.cbegin(), s_precedences_v1.cend(),
-      [](const auto& a, const auto& b) { return !b.Satisfies(a) ; })
+      [] (const auto& a, const auto& b) { return !b.Satisfies(a) ; })
     == s_precedences_v1.end();
 }
 
@@ -207,7 +207,7 @@ DEF_TEST(Precedences_v2, SemanticVersion)
 {
   return adjacent_find(
       s_precedences_v2.cbegin(), s_precedences_v2.cend(),
-      [](const auto& a, const auto& b) { return a >= b; })
+      [] (const auto& a, const auto& b) { return a >= b; })
     == s_precedences_v2.end();
 }
 
@@ -215,16 +215,42 @@ DEF_TEST(Satisfies_v2, SemanticVersion)
 {
   return adjacent_find(
       s_precedences_v2.cbegin(), s_precedences_v2.cend(),
-      [](const auto& a, const auto& b) { return !b.Satisfies(a) ; })
+      [] (const auto& a, const auto& b) { return !b.Satisfies(a) ; })
     == s_precedences_v2.end();
 }
 
-DEF_TEST(Parse, SemanticVersion)
+DEF_TEST(PrecedenceIncludesBuild_v1, SemanticVersion)
+{
+  semver::v1::Version a(1,0,0, "", "1");
+  semver::v1::Version b(1,0,0, "", "2");
+  return a < b;
+}
+
+DEF_TEST(PrecedenceOmitsBuild_v2, SemanticVersion)
+{
+  semver::v2::Version a(1,0,0, "", "1");
+  semver::v2::Version b(1,0,0, "", "2");
+  return a == b;
+}
+
+DEF_TEST(ConstructFromString, SemanticVersion)
 {
   Version v("1.2.3-alpha.2+build.1234");
   ostringstream s;
   s << v;
   return s.str() == "1.2.3-alpha.2+build.1234";
+}
+
+DEF_TEST(WellFormed, SemanticVersion)
+{
+  Version v("1.2.3-alpha.2+build.1234");
+  return v.IsWellFormed();
+}
+
+DEF_TEST(ParseIllFormed, SemanticVersion)
+{
+  Version v("1.2.3-alpha-2+build+1234");
+  return !v.IsWellFormed();
 }
 
 namespace testinator
