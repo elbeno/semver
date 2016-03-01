@@ -165,11 +165,11 @@ Version::Version(const string& s)
   string part;
 
   if (!getline(ss, part, '.')) return;
-  m_majorVersion = static_cast<unsigned int>(atol(part.c_str()));
+  m_majorVersion = static_cast<unsigned int>(strtoul(part.c_str(), 0, 0));
   if (!getline(ss, part, '.')) return;
-  m_minorVersion = static_cast<unsigned int>(atol(part.c_str()));
+  m_minorVersion = static_cast<unsigned int>(strtoul(part.c_str(), 0, 0));
   if (!getline(ss, part, '-')) return;
-  m_patchVersion = static_cast<unsigned int>(atol(part.c_str()));
+  m_patchVersion = static_cast<unsigned int>(strtoul(part.c_str(), 0, 0));
 
   if (!getline(ss, m_prereleaseVersion, '+')) return;
   getline(ss, m_buildVersion, '\0');
