@@ -220,11 +220,11 @@ bool operator==(const Version& a, const Version& b)
 //------------------------------------------------------------------------------
 bool operator<(const Version& a, const Version& b)
 {
-  if (tie(a.m_majorVersion, a.m_minorVersion, a.m_patchVersion) <
-      tie(b.m_majorVersion, b.m_minorVersion, b.m_patchVersion))
-  {
-    return true;
-  }
+  const auto ta = tie(a.m_majorVersion, a.m_minorVersion, a.m_patchVersion);
+  const auto tb = tie(b.m_majorVersion, b.m_minorVersion, b.m_patchVersion);
+
+  if (ta < tb) return true;
+  if (ta > tb) return false;
 
   // pre-release version < normal version
   if (!a.m_prereleaseVersion.empty() && b.m_prereleaseVersion.empty())

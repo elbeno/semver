@@ -288,3 +288,10 @@ DEF_PROPERTY(Roundtrip, SemanticVersion, const semver::v2::Version& before)
   Version after(s.str());
   return after.Equals(before);
 }
+
+DEF_TEST(LessThan_Issue2, SemanticVersion)
+{
+  Version a("4.5.6");
+  Version b("1.2.3");
+  return !(a < b);
+}
