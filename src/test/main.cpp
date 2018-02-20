@@ -80,11 +80,18 @@ DEF_TEST(LessThanPrerelease, SemanticVersion)
   return v1 < v2;
 }
 
-DEF_TEST(LessThanBuild, SemanticVersion)
+DEF_TEST(v1LessThanBuild, SemanticVersion)
 {
-  Version v1(1, 2, 3, "", "1");
-  Version v2(1, 2, 3, "", "2");
+  semver::v1::Version v1(1, 2, 3, "", "1");
+  semver::v1::Version v2(1, 2, 3, "", "2");
   return v1 < v2;
+}
+
+DEF_TEST(v2NotLessThanBuild, SemanticVersion)
+{
+  semver::v2::Version v1(1, 2, 3, "", "1");
+  semver::v2::Version v2(1, 2, 3, "", "2");
+  return v1 == v2;
 }
 
 DEF_TEST(PrereleaseLessThanNormal, SemanticVersion)
@@ -94,11 +101,18 @@ DEF_TEST(PrereleaseLessThanNormal, SemanticVersion)
   return v1 < v2;
 }
 
-DEF_TEST(NormalLessThanBuild, SemanticVersion)
+DEF_TEST(v1NormalLessThanBuild, SemanticVersion)
 {
-  Version v1(1, 2, 3);
-  Version v2(1, 2, 3, "", "1");
+  semver::v1::Version v1(1, 2, 3);
+  semver::v1::Version v2(1, 2, 3, "", "1");
   return v1 < v2;
+}
+
+DEF_TEST(v2NormalNotLessThanBuild, SemanticVersion)
+{
+  semver::v2::Version v1(1, 2, 3);
+  semver::v2::Version v2(1, 2, 3, "", "1");
+  return v1 == v2;
 }
 
 DEF_TEST(PrereleaseLessThanBuild, SemanticVersion)

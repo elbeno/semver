@@ -236,7 +236,7 @@ bool operator<(const Version& a, const Version& b)
     return false;
   }
 
-  return CompareIdentifiers(a.m_prereleaseVersion, b.m_prereleaseVersion) <= 0;
+  return CompareIdentifiers(a.m_prereleaseVersion, b.m_prereleaseVersion) < 0;
 }
 
 //------------------------------------------------------------------------------
