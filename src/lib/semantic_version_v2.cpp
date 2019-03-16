@@ -168,11 +168,20 @@ Version::Version(const string& s)
   m_majorVersion = static_cast<unsigned int>(strtoul(part.c_str(), 0, 0));
   if (!getline(ss, part, '.')) return;
   m_minorVersion = static_cast<unsigned int>(strtoul(part.c_str(), 0, 0));
-  if (!getline(ss, part, '-')) return;
+  if (!getline(ss, part)) return;
   m_patchVersion = static_cast<unsigned int>(strtoul(part.c_str(), 0, 0));
 
-  if (!getline(ss, m_prereleaseVersion, '+')) return;
-  getline(ss, m_buildVersion, '\0');
+  const size_t preLoc = part.find_first_of("-");
+  const size_t buildLoc = part.find_first_of("+");
+
+  if (preLoc != string::npos) {
+    const size_t length = (buildLoc != string::npos ) ? (buildLoc -1) - preLoc : string::npos;
+    m_prereleaseVersion = part.substr(preLoc+1, length);
+  }
+
+  if (buildLoc != string::npos) {
+    m_buildVersion = part.substr(buildLoc + 1, string::npos);
+  }
 }
 
 //------------------------------------------------------------------------------
